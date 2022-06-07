@@ -42,14 +42,16 @@ class SignInScreen extends StatelessWidget {
                   ),
                   BlocConsumer<AuthCubit, AuthState>(
                     listener: (context, state) {
-                      
-                      if(state is AuthCodeSentState){
-                        Navigator.push(context, CupertinoPageRoute(builder: (context) => VerifyPhoneNumberScreen(),));
+                      if (state is AuthCodeSentState) {
+                        Navigator.push(
+                            context,
+                            CupertinoPageRoute(
+                              builder: (context) => VerifyPhoneNumberScreen(),
+                            ));
                       }
                     },
                     builder: (context, state) {
-
-                      if(state is AuthLodingState){
+                      if (state is AuthLodingState) {
                         return Center(
                           child: CircularProgressIndicator(),
                         );
@@ -60,8 +62,20 @@ class SignInScreen extends StatelessWidget {
                           child: Text('Sign in'),
                           color: Colors.blue,
                           onPressed: () {
-                            String phoneNumber = '+91' + phoneController.text;
-                            BlocProvider.of<AuthCubit>(context).sendOTP(phoneNumber);
+                            if (phoneController.text.length == 10) {
+                              String phoneNumber = '+91' + phoneController.text;
+                              BlocProvider.of<AuthCubit>(context)
+                                  .sendOTP(phoneNumber);
+                            } 
+                            else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  backgroundColor: Colors.black,
+                                  content: Text('Enter valid phone number'),
+                                  duration: Duration(seconds: 2),
+                                ),
+                              );
+                            }
                           },
                         ),
                       );
